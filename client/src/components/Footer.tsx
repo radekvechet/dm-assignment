@@ -21,8 +21,8 @@ export const Footer = (props: FooterProps) => {
 
     return (
         <FooterStyled>
-            Todo: {todoItems}
-            Done: {todoItems}
+            Todo: {todoItems ?? 0}
+            Done: {doneItems ?? 0}
         </FooterStyled>
     );
 };
