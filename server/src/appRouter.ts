@@ -1,6 +1,6 @@
 import { initTRPC } from "@trpc/server"
 import { TodoItem } from "../../client/src/types/todoTypes"
-import { addTodoItemValidator } from "./validators"
+import { addTodoItemValidator, todoItemValidator } from "./validators"
 import path from "path"
 import fs from "fs-extra"
 import { isError } from "@tanstack/react-query"
@@ -56,6 +56,33 @@ export const appRouter = t.router({
     } catch (e) {
       if (isError(e)) {
         throw new Error(`Failed to write item: ${e.message}`, { cause: "DB error" })
+      }
+    }
+  }),
+
+  editItem: t.procedure.input(todoItemValidator).mutation(async ({ input }) => {
+    console.log("edit item:", input)
+    try {
+      const db = await readDB()
+      let itemFound = false
+      db.items = db.items.map((item) => {
+        if (item.id === input.id) {
+          itemFound = true
+          return {
+            ...input,
+          }
+        }
+        return item
+      })
+      if (!itemFound) {
+        throw new Error(`Item with id ${input.id} not found`, { cause: "DB error" })
+      }
+      await writeDB(db)
+
+      return { success: true, item: input }
+    } catch (e) {
+      if (isError(e)) {
+        throw new Error(`Failed to update item: ${e.message}`, { cause: "DB error" })
       }
     }
   }),

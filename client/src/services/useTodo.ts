@@ -25,14 +25,28 @@ export const useTodoItems = () => {
         },
     });
 
+    const editItemMutation = trpc.editItem.useMutation({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [["getItems"]] })
+      },
+      onError: (error) => {
+        console.error("Error editing todo item:", error.message)
+      },
+    })
+
     const addItem = async (itemName: string) => {
       await addItemMutation.mutateAsync(itemName)
     }
 
+    const editItem = async (item: TodoItem) => {
+      await editItemMutation.mutateAsync(item)
+    }
+
     return {
-        todoItemsError: addItemMutation.error,
-        todoItemsLoading: addItemMutation.isLoading,
-        useGetItems,
-        addItem,
-    };
+      todoItemsError: addItemMutation.error || editItemMutation.error,
+      todoItemsLoading: addItemMutation.isLoading || editItemMutation.isLoading,
+      useGetItems,
+      addItem,
+      editItem,
+    }
 };

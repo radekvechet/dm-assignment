@@ -23,10 +23,11 @@ type FormProps = {
   initialValues: FormValues
   onSubmit: (values: FormValues) => void
   onCancel: () => void
+  isEdit?: boolean
 }
 
 export const Form = (props: FormProps) => {
-  const { initialValues, onSubmit, onCancel } = props
+  const { initialValues, onSubmit, onCancel, isEdit = false } = props
 
   const [inputValue, setInputValue] = useState(initialValues.label)
 
@@ -40,11 +41,19 @@ export const Form = (props: FormProps) => {
         onCancel()
       }}
     >
-      <Input label="New item name:" value={inputValue} onValueChange={(value) => setInputValue(value)} />
-      <button type={"submit"}>
+      <Input
+        label={isEdit ? undefined : "New item name:"}
+        value={inputValue}
+        onValueChange={(value) => setInputValue(value)}
+      />
+      <button
+        type={"submit"}
+        title={isEdit ? "Save changes" : "Add item"}
+        aria-label={isEdit ? "Save changes" : "Add item"}
+      >
         <CheckIcon />
       </button>
-      <button type={"reset"}>
+      <button type={"reset"} title="Cancel" aria-label="Cancel">
         <Cross1Icon />
       </button>
     </FormStyled>
