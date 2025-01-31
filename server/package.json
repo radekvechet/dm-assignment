@@ -1,12 +1,25 @@
 {
-    "name": "@datamole/react-assignment-server",
-    "private": true,
-    "version": "1.0.0",
-    "scripts": {
-        "start": "node server.js",
-        "dev": "node --watch server.js"
-    },
-    "dependencies": {
-        "json-server": "^0.17.4"
-    }
+  "name": "@datamole/react-assignment-server",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --loader tsx server.tsx",
+    "dev": "tsx watch server.tsx"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^4.36.1",
+    "@trpc/server": "^10.45.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "fs-extra": "^11.3.0",
+    "json-server": "^0.17.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/fs-extra": "^11.0.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.4.5"
+  }
 }

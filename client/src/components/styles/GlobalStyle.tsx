@@ -14,4 +14,13 @@ export const GlobalStyle = createGlobalStyle`
     @supports (font-variation-settings: normal) {
       :root { font-family: InterVariable, sans-serif; }
     }
-`;
+
+    .errorMessage {
+      background-color: #ffcccc;
+      border-radius: 0.5rem;
+      margin: 0.5rem 0;
+      padding: 0.5rem 1rem;
+    }
+
+    line-height: 1.7rem;
+`
