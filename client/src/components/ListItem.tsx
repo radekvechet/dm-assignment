@@ -1,11 +1,11 @@
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import React, { useState } from "react";
-import styled from "styled-components";
+import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
+import React, { useState } from "react"
+import styled from "styled-components"
 
-import { Checkbox } from "./Checkbox";
-import { Form } from "./form";
-import { FormValues } from "../types/todoTypes";
-import { useTodoItems } from "../services/useTodo";
+import { Checkbox } from "./Checkbox"
+import { Form } from "./form"
+import { FormValues } from "../types/todoTypes"
+import { useTodoItems } from "../services/useTodo"
 
 const StyledDiv = styled.div`
   display: flex;
@@ -24,21 +24,21 @@ const StyledDiv = styled.div`
   }
 `
 const ContentWrapper = styled.div`
-    flex-grow: 1;
-    h3 {
-      margin-bottom: 0.5rem;
-    }
-    .icon {
-      color: gray;
+  flex-grow: 1;
+  h3 {
+    margin-bottom: 0.5rem;
+  }
+  .icon {
+    color: gray;
 
-      &.done {
-        color: green;
-      }
+    &.done {
+      color: green;
     }
-    .time {
-      font-size: 0.8rem;
-      color: gray;
-    }
+  }
+  .time {
+    font-size: 0.8rem;
+    color: gray;
+  }
 `
 
 const ButtonWrapper = styled.div`
@@ -61,62 +61,65 @@ const ButtonWrapper = styled.div`
 `
 
 const Label = styled.label`
-    padding-bottom: 1.25rem;
-`;
+  padding-bottom: 1.25rem;
+`
 
 export type ListItemProp = {
   itemId: number
   label: string
   isDone: boolean
   createdAt: number
-  //onItemLabelEdit: (label: string) => void
-  //onItemDoneToggle: (isDone: boolean) => void
-  //onItemDelete: () => void
 }
 
 export const ListItem = (props: ListItemProp) => {
-  const { label, isDone, createdAt, itemId /*, onItemLabelEdit, onItemDoneToggle, onItemDelete*/ } = props
-    const [showForm, setShowForm] = useState(false)
-    const { editItem } = useTodoItems()
+  const { label, isDone, createdAt, itemId } = props
+  const [showForm, setShowForm] = useState(false)
+  const { editItem, deleteItem, todoItemsLoading, todoItemsError } = useTodoItems()
 
-    const handleEditFormSubmit = async (values: FormValues) => {
-                await editItem({ id: itemId, label: values.label, isDone, createdAt: new Date().getTime() })
-                setShowForm(false)
-            }
+  const handleEditFormSubmit = async (values: FormValues) => {
+    await editItem({ id: itemId, label: values.label, isDone, createdAt: new Date().getTime() })
+    setShowForm(false)
+  }
 
-          const handleItemDoneToggle = async () => {
-            await editItem({ id: itemId, label, isDone: !isDone, createdAt: new Date().getTime() })
-          }
+  const handleItemDoneToggle = async () => {
+    await editItem({ id: itemId, label, isDone: !isDone, createdAt: new Date().getTime() })
+  }
 
-        const handleItemLabelEdit = () => {
-            setShowForm(true)
-        }
+  const handleItemLabelEdit = () => {
+    setShowForm(true)
+  }
 
-        const handleItemDelete = (itemId: number) => {
-          // TODO: Implement delete item
-          console.log("Delete item with id:", itemId)
-        }
-
+  const handleItemDelete = async (itemId: number) => {
+    await deleteItem(itemId)
+  }
 
   return (
     <StyledDiv>
       <Checkbox checked={isDone} onCheckedChange={handleItemDoneToggle} />
       <ContentWrapper>
         {showForm ? (
-          <Form isEdit={true} initialValues={{ label }} onSubmit={handleEditFormSubmit} onCancel={() => setShowForm(false)} />
+          <Form
+            isEdit={true}
+            initialValues={{ label }}
+            onSubmit={handleEditFormSubmit}
+            onCancel={() => setShowForm(false)}
+          />
         ) : (
           <>
             <Label>{label}</Label>
             <p className="time">{`${new Date(createdAt).toLocaleDateString()} ${new Date(createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}</p>
           </>
         )}
+        {todoItemsError && (
+          <p className="errorMessage">Error while updating or deleting the todo item, please try again later.</p>
+        )}
       </ContentWrapper>
       {!showForm && (
         <ButtonWrapper>
-          <button onClick={() => handleItemDelete(itemId)}>
+          <button title="Delete item" disabled={todoItemsLoading} onClick={() => handleItemDelete(itemId)}>
             <TrashIcon />
           </button>
-          <button onClick={() => handleItemLabelEdit()}>
+          <button title="Edit item" disabled={todoItemsLoading} onClick={() => handleItemLabelEdit()}>
             <Pencil1Icon />
           </button>
         </ButtonWrapper>
@@ -124,15 +127,3 @@ export const ListItem = (props: ListItemProp) => {
     </StyledDiv>
   )
 }
-
-/*
-{item.isDone ? <CheckboxIcon className="icon done" /> : <BoxIcon className="icon" />}
-                <div className="content">
-                  <h3>{item.label}</h3>
-                  <p className="time">{`${new Date(item.createdAt).toLocaleDateString()} ${new Date(item.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}</p>
-                </div>
-                <button onClick={handleEditItem(item.id)}>
-                  <Pencil1Icon />
-                </button>
-              </ListItem>
-              */

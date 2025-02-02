@@ -1,9 +1,11 @@
-import { initTRPC } from "@trpc/server"
+import { initTRPC, TRPCError } from "@trpc/server"
 import { TodoItem } from "../../client/src/types/todoTypes"
 import { addTodoItemValidator, todoItemValidator } from "./validators"
 import path from "path"
 import fs from "fs-extra"
 import { isError } from "@tanstack/react-query"
+import { z } from "zod"
+import { TRPC_ERROR_CODES_BY_KEY, TRPC_ERROR_CODES_BY_NUMBER } from "@trpc/server/dist/rpc"
 
 const t = initTRPC.create()
 const DB_PATH = path.resolve("./db.json")
@@ -33,7 +35,11 @@ export const appRouter = t.router({
       return db.items
     } catch (e) {
       if (isError(e)) {
-        throw new Error(`Failed to get items: ${e.message}`, { cause: "DB error" })
+        throw new TRPCError({
+          message: `Failed to get items: ${e.message}`,
+          code: "INTERNAL_SERVER_ERROR",
+          cause: "DB error",
+        })
       }
     }
   }),
@@ -55,7 +61,11 @@ export const appRouter = t.router({
       return { success: true, item: newItem }
     } catch (e) {
       if (isError(e)) {
-        throw new Error(`Failed to write item: ${e.message}`, { cause: "DB error" })
+        throw new TRPCError({
+          message: `Failed to add item ${input}: ${e.message}`,
+          code: "INTERNAL_SERVER_ERROR",
+          cause: "DB error",
+        })
       }
     }
   }),
@@ -75,14 +85,43 @@ export const appRouter = t.router({
         return item
       })
       if (!itemFound) {
-        throw new Error(`Item with id ${input.id} not found`, { cause: "DB error" })
+        throw new Error(`Item with id ${input.id} not found`)
       }
       await writeDB(db)
 
       return { success: true, item: input }
     } catch (e) {
       if (isError(e)) {
-        throw new Error(`Failed to update item: ${e.message}`, { cause: "DB error" })
+        throw new TRPCError({
+          message: `Failed to update item ${input}: ${e.message}`,
+          code: "INTERNAL_SERVER_ERROR",
+          cause: "DB error",
+        })
+      }
+    }
+  }),
+
+  deleteItem: t.procedure.input(z.number()).mutation(async ({ input }) => {
+    console.log("edit item:", input)
+    try {
+      const db = await readDB()
+      const itemIndex = db.items.findIndex((item) => item.id === input)
+
+      if (itemIndex !== -1) {
+        db.items.splice(itemIndex, 1)
+      } else {
+        throw new Error(`Item with id ${input} not found`)
+      }
+
+      await writeDB(db)
+      return { success: true, item: input }
+    } catch (e) {
+      if (isError(e)) {
+        throw new TRPCError({
+          message: `Failed to delete item ${input}: ${e.message}`,
+          code: "INTERNAL_SERVER_ERROR",
+          cause: "DB error",
+        })
       }
     }
   }),
