@@ -7,6 +7,13 @@ import { Button } from "./Button"
 
 const StyledDiv = styled.header`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h1 {
+    font-weight: 700;
+  }
 `
 
 type HeaderProps = {
