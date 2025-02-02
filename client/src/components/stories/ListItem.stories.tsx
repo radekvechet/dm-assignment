@@ -1,25 +1,32 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react"
+import { ListItem, type ListItemProp } from "../list/ListItem"
 
-import { ListItem } from "../list/ListItem"
-
-const meta = {
-  title: "List Item",
+const meta: Meta<typeof ListItem> = {
+  title: "Components/ListItem",
   component: ListItem,
-  argTypes: {
-    onItemDelete: { action: "removed" },
-    onItemLabelEdit: { action: "edited" },
-  },
-} as Meta<typeof ListItem>
-export default meta
-type Story = StoryObj<typeof ListItem>
-export const ToDo: Story = {
-  args: {
-    label: "Lorem ipsum dolor",
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "The ListItem displays a todo item. Hover over the item to reveal the action buttons (edit and delete).",
+      },
+    },
   },
 }
-export const Done: Story = {
+
+export default meta
+
+type Story = StoryObj<typeof ListItem>
+
+const defaultItem: ListItemProp = {
+  id: 1,
+  label: "Sample ToDo Item",
+  isDone: false,
+  createdAt: Date.now(),
+}
+
+export const Default: Story = {
   args: {
-    ...ToDo.args,
-    isDone: true,
+    ...defaultItem,
   },
 }
