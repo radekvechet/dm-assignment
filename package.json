@@ -2,7 +2,7 @@
     "name": "@datamole/assignments-react",
     "description": "Datamole's React interview assignment",
     "private": true,
-    "version": "1.0.0",
+    "version": "1.1.0",
     "packageManager": "pnpm@8.15.6",
     "scripts": {
         "dev": "cd client && pnpm run dev",
