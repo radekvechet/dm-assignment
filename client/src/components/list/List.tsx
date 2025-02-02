@@ -8,7 +8,7 @@ export const ListStyled = styled.div`
   margin-bottom: 0.5rem;
 `
 
-interface ListProps {
+export interface ListProps {
   items: TodoItem[]
   loading: boolean
   error?: string
