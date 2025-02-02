@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { ListItem } from "./ListItem"
-import type { TodoItem } from "../types/todoTypes"
+import type { TodoItem } from "../../types/todoTypes"
 
 export const ListStyled = styled.div`
   display: flex;

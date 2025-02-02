@@ -3,17 +3,10 @@ import { useAtom } from "jotai"
 import React from "react"
 import styled from "styled-components"
 import { formAtom } from "../App"
+import { Button } from "./Button"
 
 const StyledDiv = styled.header`
   display: flex;
-  button {
-    all: unset;
-    background-color: ${(props) => props.theme.colors.grass9};
-    border: 1px solid;
-    border-color: ${(props) => props.theme.colors.olive9};
-    border-radius: 50%;
-    color: #fff;
-  }
 `
 
 type HeaderProps = {
@@ -28,13 +21,14 @@ export const Header = (props: HeaderProps) => {
   return (
     <StyledDiv>
       <h1>{children}</h1>
-      <button
+      <Button
+        icon={form.isOpened ? <MinusIcon /> : <PlusIcon />}
+        title={form.isOpened ? "Close form" : "Add new item"}
+        xOffset="-2px"
         onClick={() => {
           setForm({ ...form, isOpened: !form.isOpened })
         }}
-      >
-        {form.isOpened ? <MinusIcon /> : <PlusIcon />}
-      </button>
+      />
     </StyledDiv>
   )
 }

@@ -7,8 +7,9 @@ export const GlobalStyle = createGlobalStyle`
     ${reset}
     
     :root {
-       font-family: Inter, sans-serif;
-       font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+      font-family: Inter, sans-serif;
+      font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+      line-height: 1.7rem;
     }
 
     @supports (font-variation-settings: normal) {
@@ -21,6 +22,4 @@ export const GlobalStyle = createGlobalStyle`
       margin: 0.5rem 0;
       padding: 0.5rem 1rem;
     }
-
-    line-height: 1.7rem;
 `

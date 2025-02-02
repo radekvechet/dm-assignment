@@ -1,11 +1,12 @@
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
-import React, { useState } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 
 import { Checkbox } from "./Checkbox"
-import { Form } from "./form"
-import { FormValues } from "../types/todoTypes"
-import { useTodoItems } from "../services/useTodo"
+import { Form } from "../form"
+import { FormValues, TodoItem } from "../../types/todoTypes"
+import { useTodoItems } from "../../services/useTodo"
+import { Button } from "../Button"
 
 const StyledDiv = styled.div`
   display: flex;
@@ -44,45 +45,27 @@ const ContentWrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
-  button {
-    all: unset;
-    display: none;
-    background-color: ${(props) => props.theme.colors.grass9};
-    border: 1px solid;
-    border-color: ${(props) => props.theme.colors.olive9};
-    border-radius: 50%;
-    color: #fff;
-    width: 25px;
-    height: 25px;
-    &:hover {
-      background-color: ${(props) => props.theme.colors.green10};
-    }
-  }
 `
 
 const Label = styled.label`
   padding-bottom: 1.25rem;
 `
 
-export type ListItemProp = {
-  itemId: number
-  label: string
-  isDone: boolean
-  createdAt: number
-}
+export type ListItemProp = TodoItem
 
 export const ListItem = (props: ListItemProp) => {
-  const { label, isDone, createdAt, itemId } = props
+  const { label, isDone, createdAt, id } = props
   const [showForm, setShowForm] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const { editItem, deleteItem, todoItemsLoading, todoItemsError } = useTodoItems()
 
   const handleEditFormSubmit = async (values: FormValues) => {
-    await editItem({ id: itemId, label: values.label, isDone, createdAt: new Date().getTime() })
+    await editItem({ id, label: values.label, isDone, createdAt: new Date().getTime() })
     setShowForm(false)
   }
 
   const handleItemDoneToggle = async () => {
-    await editItem({ id: itemId, label, isDone: !isDone, createdAt: new Date().getTime() })
+    await editItem({ id, label, isDone: !isDone, createdAt: new Date().getTime() })
   }
 
   const handleItemLabelEdit = () => {
@@ -94,7 +77,12 @@ export const ListItem = (props: ListItemProp) => {
   }
 
   return (
-    <StyledDiv>
+    <StyledDiv
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsHovered(true)}
+      onBlur={() => setIsHovered(false)}
+    >
       <Checkbox checked={isDone} onCheckedChange={handleItemDoneToggle} />
       <ContentWrapper>
         {showForm ? (
@@ -116,12 +104,22 @@ export const ListItem = (props: ListItemProp) => {
       </ContentWrapper>
       {!showForm && (
         <ButtonWrapper>
-          <button title="Delete item" disabled={todoItemsLoading} onClick={() => handleItemDelete(itemId)}>
-            <TrashIcon />
-          </button>
-          <button title="Edit item" disabled={todoItemsLoading} onClick={() => handleItemLabelEdit()}>
-            <Pencil1Icon />
-          </button>
+          <Button
+            icon={<TrashIcon />}
+            title="Delete item"
+            disabled={todoItemsLoading}
+            onClick={() => handleItemDelete(id)}
+            hidden={!isHovered}
+            xOffset="-2px"
+          />
+          <Button
+            icon={<Pencil1Icon />}
+            title="Edit item"
+            disabled={todoItemsLoading}
+            onClick={() => handleItemLabelEdit()}
+            hidden={!isHovered}
+            xOffset="-2px"
+          />
         </ButtonWrapper>
       )}
     </StyledDiv>

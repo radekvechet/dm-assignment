@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Input } from "./Input"
 import { type FormValues } from "../../types/todoTypes"
 import styled from "styled-components"
+import { Button } from "../Button"
 
 const FormStyled = styled.form`
   display: flex;
@@ -46,16 +47,13 @@ export const Form = (props: FormProps) => {
         value={inputValue}
         onValueChange={(value) => setInputValue(value)}
       />
-      <button
+      <Button
+        icon={<CheckIcon />}
         type={"submit"}
         title={isEdit ? "Save changes" : "Add item"}
         aria-label={isEdit ? "Save changes" : "Add item"}
-      >
-        <CheckIcon />
-      </button>
-      <button type={"reset"} title="Cancel" aria-label="Cancel">
-        <Cross1Icon />
-      </button>
+      />
+      <Button icon={<Cross1Icon />} type={"reset"} title="Cancel" aria-label="Cancel" />
     </FormStyled>
   )
 }
