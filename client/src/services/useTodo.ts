@@ -9,11 +9,11 @@ export const useTodoItems = () => {
         const { data, error, isLoading, isRefetching } = trpc.getItems.useQuery();
 
         return {
-            items: data,
-            error,
-            loading: isLoading,
-            isRefetching: isRefetching,
-        };
+          items: data as TodoItem[],
+          error,
+          loading: isLoading,
+          isRefetching: isRefetching,
+        }
     };
 
     const addItemMutation = trpc.addItem.useMutation({

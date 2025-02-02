@@ -13,7 +13,10 @@ export const formAtom = atom<FormAtom>({ isOpened: false, values: { label: "" } 
 
 export const App = () => {
   const [form, setForm] = useAtom(formAtom)
-  const { addItem } = useTodoItems()
+  const { addItem, useGetItems } = useTodoItems()
+  const { items, loading, error } = useGetItems()
+
+  const errorString = error ? `Sorry, there was an error in our app: ${error.message}` : undefined
 
   const handleFormSubmit = async (value: FormValues) => {
     await addItem(value.label)
@@ -36,11 +39,14 @@ export const App = () => {
         <Layout>
           <Header onItemAdd={() => console.warn("unimplemented")}>To Do app</Header>
 
-          <List />
+          <List items={items} loading={loading} error={errorString} />
           {form.isOpened && (
             <Form initialValues={form.values} onSubmit={handleFormSubmit} onCancel={handleFormCancel} />
           )}
-          <Footer />
+          <Footer
+            todoItems={items?.filter((item) => !item.isDone).length}
+            doneItems={items?.filter((item) => item.isDone).length}
+          />
         </Layout>
       </Container>
     </ThemeProvider>

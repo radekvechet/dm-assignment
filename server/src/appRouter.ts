@@ -32,7 +32,7 @@ export const appRouter = t.router({
   getItems: t.procedure.query(async () => {
     try {
       const db = await readDB()
-      return db.items
+      return db.items as TodoItem[]
     } catch (e) {
       if (isError(e)) {
         throw new TRPCError({

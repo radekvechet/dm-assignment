@@ -1,16 +1,20 @@
-import styled from "styled-components";
-import { useTodoItems } from "../services/useTodo"
+import styled from "styled-components"
 import { ListItem } from "./ListItem"
-import { TodoItem } from "../types/todoTypes"
+import type { TodoItem } from "../types/todoTypes"
 
 export const ListStyled = styled.div`
   display: flex;
   flex-direction: column;
 `
 
-export const List = () => {
-  const { useGetItems } = useTodoItems()
-  const { items, loading, error } = useGetItems()
+interface ListProps {
+  items: TodoItem[]
+  loading: boolean
+  error?: string
+}
+
+export const List = (props: ListProps) => {
+  const { items, loading, error } = props
 
   const sortItems = (a: TodoItem, b: TodoItem): number => {
     // First, sort by isDone: items with isDone === true should come first.
@@ -25,7 +29,7 @@ export const List = () => {
   return (
     <ListStyled>
       {error ? (
-        <p className="errorMessage">Sorry, there was an error in our app: {error.message}</p>
+        <p className="errorMessage">{error}</p>
       ) : (
         <>
           {loading && <p>Loading...</p>}
