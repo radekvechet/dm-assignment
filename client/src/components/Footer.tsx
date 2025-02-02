@@ -2,6 +2,8 @@ import styled from "styled-components"
 
 const FooterStyled = styled.footer`
   display: flex;
+  position: absolute;
+  bottom: 0;
 
   margin-top: 15px;
   padding-top: 15px;

@@ -5,6 +5,7 @@ import type { TodoItem } from "../../types/todoTypes"
 export const ListStyled = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 0.5rem;
 `
 
 interface ListProps {
@@ -33,7 +34,9 @@ export const List = (props: ListProps) => {
       ) : (
         <>
           {loading && <p>Loading...</p>}
+          {items && items.length === 0 && <p>Add some new items</p>}
           {items &&
+            items.length > 0 &&
             items
               .sort(sortItems)
               .map((item) => (

@@ -8,6 +8,7 @@ import { Form } from "./components/form"
 import { atom, useAtom } from "jotai"
 import { FormAtom, FormValues } from "./types/todoTypes"
 import { useTodoItems } from "./services/useTodo"
+import { useEffect } from "react"
 
 export const formAtom = atom<FormAtom>({ isOpened: false, values: { label: "" } })
 
@@ -15,6 +16,15 @@ export const App = () => {
   const [form, setForm] = useAtom(formAtom)
   const { addItem, useGetItems } = useTodoItems()
   const { items, loading, error } = useGetItems()
+
+  useEffect(() => {
+    if (items && items.length == 0) {
+      setForm({
+        values: { label: "" },
+        isOpened: true,
+      })
+    }
+  }, [items])
 
   const errorString = error ? `Sorry, there was an error in our app: ${error.message}` : undefined
 
