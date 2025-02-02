@@ -1,4 +1,4 @@
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
+import { Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons"
 import { useState } from "react"
 import styled from "styled-components"
 
@@ -57,23 +57,24 @@ export const ListItem = (props: ListItemProp) => {
   const { label, isDone, createdAt, id } = props
   const [showForm, setShowForm] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const { editItem, deleteItem, todoItemsLoading, todoItemsError } = useTodoItems()
+  const { editItem, deleteItem, toggleItemDone, todoItemsLoading, todoItemsError } = useTodoItems()
+  const [hideError, setHideError] = useState(false)
 
   const handleEditFormSubmit = async (values: FormValues) => {
-    await editItem({ id, label: values.label, isDone, createdAt: new Date().getTime() })
+    await editItem({ id, label: values.label, isDone, createdAt })
     setShowForm(false)
   }
 
   const handleItemDoneToggle = async () => {
-    await editItem({ id, label, isDone: !isDone, createdAt: new Date().getTime() })
+    await toggleItemDone(id)
   }
 
   const handleItemLabelEdit = () => {
     setShowForm(true)
   }
 
-  const handleItemDelete = async (itemId: number) => {
-    await deleteItem(itemId)
+  const handleItemDelete = async () => {
+    await deleteItem(id)
   }
 
   return (
@@ -98,8 +99,11 @@ export const ListItem = (props: ListItemProp) => {
             <p className="time">{`${new Date(createdAt).toLocaleDateString()} ${new Date(createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}</p>
           </>
         )}
-        {todoItemsError && (
-          <p className="errorMessage">Error while updating or deleting the todo item, please try again later.</p>
+        {todoItemsError && !hideError && (
+          <div className="errorMessage">
+            <p>Error while updating or deleting the todo item, please try again later.</p>{" "}
+            <Cross1Icon onClick={() => setHideError(true)} />
+          </div>
         )}
       </ContentWrapper>
       {!showForm && (
@@ -108,9 +112,9 @@ export const ListItem = (props: ListItemProp) => {
             icon={<TrashIcon />}
             title="Delete item"
             disabled={todoItemsLoading}
-            onClick={() => handleItemDelete(id)}
+            onClick={() => handleItemDelete()}
             hidden={!isHovered}
-            xOffset="-2px"
+            $xoffset="-2px"
           />
           <Button
             icon={<Pencil1Icon />}
@@ -118,7 +122,7 @@ export const ListItem = (props: ListItemProp) => {
             disabled={todoItemsLoading}
             onClick={() => handleItemLabelEdit()}
             hidden={!isHovered}
-            xOffset="-2px"
+            $xoffset="-2px"
           />
         </ButtonWrapper>
       )}

@@ -5,7 +5,6 @@ import path from "path"
 import fs from "fs-extra"
 import { isError } from "@tanstack/react-query"
 import { z } from "zod"
-import { TRPC_ERROR_CODES_BY_KEY, TRPC_ERROR_CODES_BY_NUMBER } from "@trpc/server/dist/rpc"
 
 const t = initTRPC.create()
 const DB_PATH = path.resolve("./db.json")
@@ -102,7 +101,7 @@ export const appRouter = t.router({
   }),
 
   deleteItem: t.procedure.input(z.number()).mutation(async ({ input }) => {
-    console.log("edit item:", input)
+    console.log("delete item:", input)
     try {
       const db = await readDB()
       const itemIndex = db.items.findIndex((item) => item.id === input)
@@ -119,6 +118,39 @@ export const appRouter = t.router({
       if (isError(e)) {
         throw new TRPCError({
           message: `Failed to delete item ${input}: ${e.message}`,
+          code: "INTERNAL_SERVER_ERROR",
+          cause: "DB error",
+        })
+      }
+    }
+  }),
+
+  toggleItemDone: t.procedure.input(z.number()).mutation(async ({ input }) => {
+    console.log("toggle item done:", input)
+    try {
+      const db = await readDB()
+      let itemFound = false
+      db.items = db.items.map((item) => {
+        if (item.id === input) {
+          itemFound = true
+          return {
+            ...item,
+            isDone: !item.isDone,
+            finishedAt: !item.isDone ? Date.now() : undefined,
+          }
+        }
+        return item
+      })
+      if (!itemFound) {
+        throw new Error(`Item with id ${input} not found`)
+      }
+      await writeDB(db)
+
+      return { success: true, item: input }
+    } catch (e) {
+      if (isError(e)) {
+        throw new TRPCError({
+          message: `Failed to toggle item done ${input}: ${e.message}`,
           code: "INTERNAL_SERVER_ERROR",
           cause: "DB error",
         })

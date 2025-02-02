@@ -5,6 +5,7 @@ export const todoItemValidator = z.object({
   id: z.number(),
   isDone: z.boolean(),
   createdAt: z.number(),
+  finishedAt: z.number().optional(),
 })
 
 export const addTodoItemValidator = z.string()

@@ -6,24 +6,24 @@ export const useTodoItems = () => {
     const queryClient = useQueryClient();
 
     const useGetItems = () => {
-        const { data, error, isLoading, isRefetching } = trpc.getItems.useQuery();
+      const { data, error, isLoading, isRefetching } = trpc.getItems.useQuery()
 
-        return {
-          items: data as TodoItem[],
-          error,
-          loading: isLoading,
-          isRefetching: isRefetching,
-        }
-    };
+      return {
+        items: data as TodoItem[],
+        error,
+        loading: isLoading,
+        isRefetching: isRefetching,
+      }
+    }
 
     const addItemMutation = trpc.addItem.useMutation({
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [["getItems"]] });
-        },
-        onError: (error) => {
-            console.error("Error adding todo item:", error.message);
-        },
-    });
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [["getItems"]] })
+      },
+      onError: (error) => {
+        console.error("Error adding todo item:", error.message)
+      },
+    })
 
     const editItemMutation = trpc.editItem.useMutation({
       onSuccess: () => {
@@ -31,6 +31,15 @@ export const useTodoItems = () => {
       },
       onError: (error) => {
         console.error("Error editing todo item:", error.message)
+      },
+    })
+
+    const toggleItemDoneMutation = trpc.toggleItemDone.useMutation({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [["getItems"]] })
+      },
+      onError: (error) => {
+        console.error("Error toggling todo item:", error.message)
       },
     })
 
@@ -55,12 +64,22 @@ export const useTodoItems = () => {
       await deleteItemMutation.mutateAsync(id)
     }
 
+    const toggleItemDone = async (id: number) => {
+      await toggleItemDoneMutation.mutateAsync(id)
+    }
+
     return {
-      todoItemsError: addItemMutation.error || editItemMutation.error || deleteItemMutation.error,
-      todoItemsLoading: addItemMutation.isLoading || editItemMutation.isLoading || deleteItemMutation.isLoading,
+      todoItemsError:
+        addItemMutation.error || editItemMutation.error || deleteItemMutation.error || toggleItemDoneMutation.error,
+      todoItemsLoading:
+        addItemMutation.isLoading ||
+        editItemMutation.isLoading ||
+        deleteItemMutation.isLoading ||
+        toggleItemDoneMutation.isLoading,
       useGetItems,
       addItem,
       editItem,
+      toggleItemDone,
       deleteItem,
     }
 };

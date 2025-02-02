@@ -1,8 +1,9 @@
 export interface TodoItem {
-    label: string;
-    id: number;
-    isDone: boolean;
-    createdAt: number;
+  label: string
+  id: number
+  isDone: boolean
+  createdAt: number
+  finishedAt?: number
 }
 
 export interface FormValues {

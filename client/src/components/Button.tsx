@@ -4,10 +4,10 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   title: string
   icon: React.ReactNode
   hidden?: boolean
-  xOffset?: string
+  $xoffset?: string
 }
 
-const StyledButton = styled.button<{ hidden?: boolean; xOffset?: string }>`
+const StyledButton = styled.button<{ hidden?: boolean; $xoffset?: string }>`
   display: ${(props) => (props.hidden ? "none" : "block")};
   background-color: ${(props) => props.theme.colors.grass9};
   border: 1px solid;
@@ -29,15 +29,15 @@ const StyledButton = styled.button<{ hidden?: boolean; xOffset?: string }>`
   }
   & > svg {
     display: block;
-    margin: auto ${(props) => props.xOffset ?? "auto"};
+    margin: auto ${(props) => props.$xoffset ?? "auto"};
   }
 `
 
 export const Button = (props: ButtonProps) => {
-  const { title, icon, xOffset, ...rest } = props
+  const { title, icon, $xoffset, ...rest } = props
 
   return (
-    <StyledButton xOffset={xOffset} title={title} {...rest}>
+    <StyledButton $xoffset={$xoffset} title={title} {...rest}>
       {icon}
     </StyledButton>
   )

@@ -31,7 +31,7 @@ export const Header = (props: HeaderProps) => {
       <Button
         icon={form.isOpened ? <MinusIcon /> : <PlusIcon />}
         title={form.isOpened ? "Close form" : "Add new item"}
-        xOffset="-2px"
+        $xoffset="-2px"
         onClick={() => {
           setForm({ ...form, isOpened: !form.isOpened })
         }}

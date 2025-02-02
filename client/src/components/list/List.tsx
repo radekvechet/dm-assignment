@@ -38,7 +38,7 @@ export const List = (props: ListProps) => {
               .sort(sortItems)
               .map((item) => (
                 <ListItem
-                  itemId={item.id}
+                  id={item.id}
                   key={item.id}
                   label={item.label}
                   createdAt={item.createdAt}

@@ -21,5 +21,14 @@ export const GlobalStyle = createGlobalStyle`
       border-radius: 0.5rem;
       margin: 0.5rem 0;
       padding: 0.5rem 1rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      & > p {
+        margin-right: 1rem;
+      }
+      & > svg {
+        cursor: pointer;
+      }
     }
 `
